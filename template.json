@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "starter-template",
+  "track_id": "leaderboard-playground",
+  "name": "Leaderboard Playground",
+  "tagline": "A single-player game with a swappable leaderboard backend.",
+  "description": "Starter template demonstrating clean separation between a game and its scoreboard. Ships with Flappy Bird and a localStorage leaderboard. Plug in any game that emits a numeric score, or swap the backend for a contract or Bulletin without touching the game.",
+  "repository": "",
+  "difficulty": "beginner",
+  "reference_branch": "main",
+  "start_branch": "main",
+  "required_tools": ["dot-cli", "node", "npm"],
+  "optional_tools": ["cdm", "rustup", "bulletin-deploy"],
+  "packages": [],
+  "quests_manifest": "quests.json"
+}
