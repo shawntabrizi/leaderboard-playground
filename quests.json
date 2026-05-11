@@ -2,14 +2,14 @@
   "schema_version": 1,
   "track_id": "leaderboard-playground",
   "title": "Leaderboard Playground",
-  "description": "Mod ideas to extend this template. Each one demonstrates a different layer of the Polkadot stack and reuses the existing game/scoreboard separation.",
+  "description": "Mod ideas to extend this template. Each one demonstrates a different layer of the Polkadot stack and reuses the existing game / scoreboard / contract separation.",
   "quests": [
     {
       "id": "swap-the-game",
       "title": "Swap the game",
       "difficulty": 1,
       "estimated_minutes": 30,
-      "summary": "Replace Flappy Bird with your own game. Build a component that accepts GameComponentProps and calls onGameEnd(score) once when the game ends. The scoreboard, leaderboard UI, and player input all keep working without changes — App.tsx is the only file you need to edit.",
+      "summary": "Replace Flappy Bird with your own game. Build a component that accepts GameComponentProps and calls onGameEnd(score) once when the game ends. The scoreboard, contract, leaderboard UI, and player input all keep working without changes — App.tsx is the only file you need to edit.",
       "teaches": [
         "React component contracts",
         "Designing for plug-in extensibility",
@@ -22,26 +22,43 @@
       ]
     },
     {
-      "id": "on-chain-leaderboard",
-      "title": "Move the leaderboard on-chain",
+      "id": "caller-based-identity",
+      "title": "Bind scores to accounts",
       "difficulty": 3,
       "estimated_minutes": 60,
-      "summary": "Implement ScoreboardAPI against a PVM smart contract on Asset Hub. Drop the new implementation into App.tsx in place of localScoreboard. The game and leaderboard UI never know the difference.",
+      "summary": "Replace the display-name identity with caller() (the H160 of the transaction signer). The contract maps Address → best score, and the leaderboard renders the address with a user-chosen display name stored separately. Score spoofing becomes impossible.",
       "teaches": [
-        "PVM contract deployment via cdm",
-        "Mapping<Address, u128> for player → best score",
-        "Querying contract storage from the frontend"
+        "Revive H160 caller() and Address mapping",
+        "Per-account vs per-name storage trade-offs",
+        "Decoupling identity from display"
       ],
-      "required_tools": ["dot-cli", "cdm", "rustup"],
+      "required_tools": ["cdm", "rustup"],
       "acceptance": [
-        "Contract deployed to Paseo Asset Hub",
-        "ContractScoreboard implements ScoreboardAPI",
-        "Scores persist across browsers and accounts"
+        "Contract storage uses Address as the key for best score",
+        "Submissions can only update the caller's own score",
+        "Leaderboard renders both display name and short address"
+      ]
+    },
+    {
+      "id": "real-signer",
+      "title": "Replace //Alice with a real signer",
+      "difficulty": 2,
+      "estimated_minutes": 45,
+      "summary": "By default every submission is signed by the //Alice dev key. Wire up a real signer — the Polkadot extension via @polkadot-apps/signer, the playground.dot mobile session key, or a per-browser keypair stored in localStorage.",
+      "teaches": [
+        "@polkadot-apps/signer SignerManager",
+        "Account selection / connection UX",
+        "PolkadotSigner shape used by polkadot-api"
+      ],
+      "acceptance": [
+        "User connects an account before submitting",
+        "Submissions are signed by the connected account",
+        "App.tsx surfaces the connected address in the UI"
       ]
     },
     {
       "id": "bulletin-history",
-      "title": "Persist game history on Bulletin",
+      "title": "Persist match history on Bulletin",
       "difficulty": 2,
       "estimated_minutes": 45,
       "summary": "Each match's full history (rounds, timestamps, replay data) gets uploaded to Bulletin Chain on game end. The contract stores only (player, score, latest_cid) — heavy data lives off-chain, content-addressed.",
@@ -61,14 +78,14 @@
       "title": "Cross-game scoring",
       "difficulty": 2,
       "estimated_minutes": 45,
-      "summary": "Add a game_id field to ScoreEntry and ScoreboardAPI so multiple games can share one leaderboard contract. Players accumulate points across all games; per-game leaderboards are still available via filter.",
+      "summary": "Add a game_id field to ScoreEntry, ScoreboardAPI, and the contract so multiple games can share one leaderboard. Players accumulate points across all games; per-game leaderboards are still available via filter.",
       "teaches": [
         "Composite keys in contract storage",
         "API evolution without breaking existing games",
         "UX patterns for cross-game ranking"
       ],
       "acceptance": [
-        "Two distinct games write to the same scoreboard",
+        "Two distinct games write to the same contract",
         "A 'global' tab sums points across games per player",
         "A 'per-game' tab filters by game_id"
       ]

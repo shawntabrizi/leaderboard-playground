@@ -9,6 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dotdm/cdm": "latest",
+    "@polkadot-labs/hdkd": "^0.0.26",
+    "@polkadot-labs/hdkd-helpers": "^0.0.27",
+    "polkadot-api": "^1.23.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

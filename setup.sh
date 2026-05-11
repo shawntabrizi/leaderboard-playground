@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Playground starter setup — runs after `dot mod` clones the repo.
-# Safe to re-run. Should finish in under 1 minute on a clean box.
+# Safe to re-run. The npm install completes in well under a minute;
+# the contract deploy is a separate step (see README.md).
 
 set -euo pipefail
 
@@ -19,17 +20,30 @@ if [ -f "package.json" ]; then
     fi
 fi
 
+echo
+echo "[setup] Checking optional contract toolchain..."
+if ! command -v cargo >/dev/null 2>&1; then
+    echo "[setup] WARNING: cargo not found. Install via https://rustup.rs to build the contract."
+fi
+if ! command -v cdm >/dev/null 2>&1; then
+    echo "[setup] WARNING: cdm CLI not found. Install it before deploying — see README.md."
+fi
+
 cat <<'EOF'
 
 [setup] Done.
 
-Next steps:
-  npm run dev              # start the dev server (or pnpm dev)
-  open http://localhost:5173
+To run with the on-chain leaderboard (the default):
+  cdm init -n paseo                  # generate keypair (one-time)
+  # fund the printed address at https://faucet.polkadot.io
+  cdm account map -n paseo           # one-time Revive H160 mapping
+  cdm build && cdm deploy -n paseo
+  cdm install @example/leaderboard-playground -n paseo
+  npm run dev
+
+To run without deploying (localStorage fallback):
+  See docs/modding.md → "Swap the backend → drop back to localStorage".
 
 To swap the game:
-  See README.md → "Swap the game" and src/games/types.ts.
-
-To move the leaderboard on-chain:
-  See quests.json → "on-chain-leaderboard".
+  See docs/modding.md → "Swap the game" and src/games/types.ts.
 EOF
