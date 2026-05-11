@@ -36,6 +36,24 @@ Open <http://localhost:5173>. The game starts immediately. Scores are saved to y
 
 If you start `npm run dev` before deploying, the page renders with a banner explaining how to deploy. Submissions are disabled until the contract is in `cdm.json`.
 
+## Publish to Playground
+
+Once the game works locally, publish the contract and frontend to Polkadot Playground in one shot with [`dot`](https://github.com/paritytech/playground-cli):
+
+```bash
+dot deploy --contracts --playground --moddable
+```
+
+What each flag does:
+
+- `--contracts` — compiles and deploys the leaderboard contract (replaces the manual `cdm deploy && cdm install` step above). The new address is written into `cdm.json`.
+- `--playground` — publishes to the Playground registry so the app appears in your "my apps" list. The publish is signed by your account so the registry contract records you as the owner.
+- `--moddable` — records this repo's URL in the Bulletin metadata so others can clone and mod the source with `dot mod`. Reads your existing `origin` and fails fast if it's missing, private, or not GitHub.
+
+The CLI also uploads `dist/` to Bulletin Chain and registers a `.dot` domain via DotNS. Interactive prompts cover `--signer` (`phone` to sign with your account, `dev` for shared keys), `--domain` (DotNS label), and `--buildDir` (default `dist/`).
+
+Prerequisites: run `dot init` once on a fresh machine to install `rustup`, `cdm`, `ipfs`, and `gh`, and to pair with the Polkadot mobile app. For `--moddable` you also need a public GitHub `origin` (this repo already has one).
+
 ## Architecture
 
 ```
